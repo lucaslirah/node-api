@@ -1,14 +1,18 @@
 const AppError = require("../utils/AppError");
+const knex = require("../database/knex");
 
 class UsersController{
-    create(request, response){
+    async create(request, response){
         const { name, email, password } = request.body;
-
-        if(!name){
-            throw new AppError("Name is required!");
+        
+        const users = await knex("users").where({ email });
+        console.log(email);
+        
+        if(users){
+            throw new AppError("Email already in use!");
         }
-
-        response.json({ name, email, password });
+        
+        return response.json(users);
     }
 }
 
