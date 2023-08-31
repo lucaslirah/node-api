@@ -34,40 +34,45 @@ class UsersController{
             throw new AppError("User not found!");
         }
         
-        const [userWithUpdatedEmail] = await knex("users").where({email});
-        
-        if(userWithUpdatedEmail && userWithUpdatedEmail.id !== user.id){
-            throw new AppError("Email already in use!");
-        }
-        
-        user.name = name ?? user.name;
-        user.email = email ?? user.email;
+        const [userExists] = knex("users").where({email});
+        console.log(userExists);
 
-        if(password && !old_password){
-            throw new AppError("You need to enter the old password.");
-        }
-        if(password && old_password){
-            const checkOldPassword = await compare(old_password, user.password);
-            if(!checkOldPassword){
-                throw new AppError("The old password does not mach.");
-            }
+        // if (userExists && userExists.id !== user.id) {
+        //     throw new AppError('Email já cadastrado');
+        // }
 
-            user.password = await hash(password,8);
-        }
+        // // if( && .id !== user.id){
+        // //     throw new AppError("Email already in use!");
+        // // }
         
-        setGlobalDateMasks({
-            dateTimeMask: 'YYYY-MM-DD HH:mm:ss'
-        });
-        const timestamp = format(Date.now(), 'dateTimeMask');
+        // user.name = name ?? user.name;
+        // user.email = email ?? user.email;
 
-        await knex("users")
-        .where({id})
-        .update({
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            updated_at: timestamp,
-        })
+        // if(password && !old_password){
+        //     throw new AppError("You need to enter the old password.");
+        // }
+        // if(password && old_password){
+        //     const checkOldPassword = await compare(old_password, user.password);
+        //     if(!checkOldPassword){
+        //         throw new AppError("The old password does not mach.");
+        //     }
+
+        //     user.password = await hash(password,8);
+        // }
+        
+        // setGlobalDateMasks({
+        //     dateTimeMask: 'YYYY-MM-DD HH:mm:ss'
+        // });
+        // const timestamp = format(Date.now(), 'dateTimeMask');
+
+        // // await knex("users")
+        // // .where({id})
+        // // .update({
+        // //     name: user.name,
+        // //     email: user.email,
+        // //     password: user.password,
+        // //     updated_at: timestamp,
+        // // })
 
         response.json();
     }
