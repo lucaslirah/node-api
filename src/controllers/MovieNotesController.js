@@ -6,6 +6,7 @@ class MovieNotesController{
     async create(request, response){
         const { title, description, rating, tags } = request.body;
         const { user_id } = request.params;
+        await knex.raw('PRAGMA foreign_keys = ON');
 
         const [note_id] = await knex("movie_notes").insert({
             title,
@@ -25,6 +26,17 @@ class MovieNotesController{
         await knex("movie_tags").insert(movieTags);
 
         response.json();
+    }
+    async show(request, response){
+        const { id } = request.params;
+
+        const movieNotes = await knex("movie_notes").where({id}).first();
+        const movieTags = await knex("movie_tags").where({note_id: id }).orderBy("genre");
+
+        return response.json({
+            ...movieNotes,
+            movieTags
+        });
     }
 }
 
