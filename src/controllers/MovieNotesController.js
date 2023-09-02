@@ -42,9 +42,18 @@ class MovieNotesController{
         const { id } = request.params;
 
         await knex("movie_notes")
-        .where({id}).delete()
+        .where({id}).delete();
 
         return response.json();
+    }
+    async index(request, response){
+        const { user_id } = request.query;
+
+        let movieNotes = await knex("movie_notes")
+        .where({user_id})
+        .orderBy("title");
+
+        return response.json(movieNotes);
     }
 }
 
