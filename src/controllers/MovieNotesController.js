@@ -6,9 +6,12 @@ class MovieNotesController{
     async create(request, response){
         const { title, description, rating, tags } = request.body;
         const { user_id } = request.params;
-        await knex.raw('PRAGMA foreign_keys = ON');
 
-        const [note_id] = await knex("movie_notes").insert({
+        if(!title){
+            throw new AppError("You must at least give the note a title!");
+        }
+
+        const [movieNoteId] = await knex("movie_notes").insert({
             title,
             description,
             rating,
@@ -17,7 +20,7 @@ class MovieNotesController{
 
         const movieTags = tags.map(genre => {
             return {
-                note_id,
+                note_id: movieNoteId,
                 user_id,
                 genre,
             }
