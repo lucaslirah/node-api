@@ -1,7 +1,7 @@
 const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
 const { hash, compare } = require("bcryptjs");
-const { format, setGlobalDateMasks } = require("fecha");
+const { format } = require("fecha");
 
 class UsersController{
     async create(request, response){
@@ -55,9 +55,6 @@ class UsersController{
         user.name = name ?? user.name;
         user.email = email ?? user.email;
 
-        setGlobalDateMasks({
-            dateTimeMask: 'YYYY-MM-DD HH:mm:ss'
-        });
         const timestamp = format(Date.now(), 'dateTimeMask')
 
         await knex("users")

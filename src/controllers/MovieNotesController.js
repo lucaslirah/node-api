@@ -1,6 +1,6 @@
 const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
-const { format, setGlobalDateMasks } = require("fecha");
+const { format } = require("fecha");
 
 class MovieNotesController{
     async create(request, response){
@@ -89,6 +89,35 @@ class MovieNotesController{
         });
 
         return response.json(movieNotesWithTags);
+    }
+    async update(request, response){
+        const { title, description, rating, tags } = request.body;
+        const { id } = request.params;
+
+        if(!title){
+            throw new AppError("You must at least give the note a title!");
+        }
+
+        // if(tags){
+        //     updateTags = 
+        //     await knex("movie_tags")
+        //     .where("note_id", id)
+        //     .update({
+        //         genre: ""
+        //     });
+        // }
+
+        const timestamp = format(Date.now(), 'dateTimeMask')
+
+        await knex("movie_notes")
+        .where({id}).update({
+            title,
+            description,
+            rating,
+            updated_at: timestamp
+        });
+
+        response.json();
     }
 }
 

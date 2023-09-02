@@ -5,6 +5,10 @@ const express = require("express");
 const app = express();
 const routes = require("./routes");
 const PORT = 3333;
+const { setGlobalDateMasks } = require("fecha");
+setGlobalDateMasks({
+    dateTimeMask: 'YYYY-MM-DD HH:mm:ss'
+});
 
 app.use(express.json());
 app.use(routes);
